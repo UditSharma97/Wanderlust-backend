@@ -1,10 +1,11 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const Listing = require("./Models/listing.js");
+const Listing = require("./models/listing.js");
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
+const Review = require("./models/review.js");
 
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
 
@@ -23,11 +24,14 @@ async function main() {
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "/views"));
+
 // to able to deconstruct or to parse the object
 app.use(express.urlencoded ({extended : true}));
 app.use(methodOverride("_method"));
+
 // ejs-mate
 app.engine("ejs", ejsMate);
+
 // to serve static files
 app.use(express.static(path.join(__dirname, "/public")));
 
@@ -80,6 +84,20 @@ app.delete("/listings/:id", async (req, res) => {
     const deletedListing = await Listing.findByIdAndDelete(id);
     console.log(deletedListing);
     res.redirect("/listings");
+})
+
+//Reviews
+//Post Route
+app.post("/listings/:id/reviews", async (req, res) =>{
+    let listing = await Listing.findById(req.params.id);
+    let newReview = new Review(req.body.review);
+
+    listing.reviews.push(newReview);
+
+    await newReview.save();
+    await listing.save();
+
+    res.redirect(`/listings/${listing ._id}`);
 })
 // app.get("/testListing", async (req, res) => {
 //     let sampleListing = new listing({
