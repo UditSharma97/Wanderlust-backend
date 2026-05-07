@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+// Listing model schema
 const listingSchema = new Schema({
     title: {
         type: String,
