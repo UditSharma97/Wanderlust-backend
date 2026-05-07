@@ -10,10 +10,10 @@ const reviewSchema = new Schema({
     },
     createdAt : {
         type : Date,
-        default : Date.Now
+        default : Date.now
     }
 })
 
-const Review= mongoose.model("Review", reviewSchema);
+const Review = mongoose.model("Review", reviewSchema);
 
 module.exports = Review;
