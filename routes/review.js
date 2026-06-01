@@ -5,7 +5,7 @@ const ExpressError = require("../utils/ExpressError.js");
 const { reviewSchema } = require("../schema.js");
 const Listing = require("../models/listing.js");
 const Review = require("../models/review.js");
-
+const reviewController = require("../controllers/reviews.js");
 
 
 const validateReview = (req, res, next) => {
@@ -21,33 +21,15 @@ const validateReview = (req, res, next) => {
 
 //Reviews
 //Post Route
-router.post("/",
+router.post(
+    "/",
     validateReview,
-    wrapAsync (async (req, res) =>{
-    let listing = await Listing.findById(req.params.id);
-    let newReview = new Review(req.body.review);
-
-    listing.reviews.push(newReview);
-
-    await newReview.save();
-    await listing.save();
-    req.flash("success", "New Listing Created !");
-
-    res.redirect(`/listings/${listing._id}`);
-}));
+    wrapAsync (reviewController.createReview));
 
 //Delete Review Route
 router.delete(
     "/:reviewId",
-    wrapAsync(async (req, res) => {
-        let { id, reviewId } = req.params;
-
-        await Listing.findByIdAndUpdate(id, {$pull: {reviews: reviewId}});
-        await Review.findById(reviewId);
-        req.flash("success", "Listing Deleted !");
-
-    res.redirect(`/listings/${id}`);
-    })
+    wrapAsync(reviewController.destroyReview)
 );
 
 module.exports = router;
