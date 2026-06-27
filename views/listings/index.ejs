@@ -1,21 +1,121 @@
 <% layout("layouts/boilerplate.ejs") %>
-<h2 class="py-3 font-bold">All Listings</h2>
-<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+
+ <style>
+    #filters{
+        align-items: center;
+    }
+    .filter{
+        opacity: 0.72;
+        margin-right: 1.5rem;
+        padding: 0.5rem;
+    }
+    .filter:hover{
+        opacity: 1;
+        cursor: pointer; 
+    }
+    .filter p{
+        letter-spacing: 0.019rem;
+        font-size: 0.82rem;
+        margin-bottom: 0; 
+    }
+    .tax-info{
+        display: none;
+    }
+    .tax-toggle{
+        border: 1px solid black;
+        border-radius: 1rem;
+        height: 3.5rem;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        margin-left: 14.3rem;
+    }
+   
+ </style>
+
+ <div id="filters" class="mt-3 d-flex flex-wrap">
+    <div class="filter text-center">
+        <div><i class="fa-solid fa-fire"></i></div>
+        <p>Trending</p>
+    </div>
+    <div class="filter text-center">
+        <div><i class="fa-solid fa-bed"></i></div>
+        <p>Rooms</p>
+    </div>
+    <div class="filter text-center">
+        <div><i class="fa-solid fa-volleyball"></i></div>
+        <p>Beach</p>
+    </div>
+    <div class="filter text-center">
+        <div><i class="fa-solid fa-building-wheat"></i></div>
+        <p>Farms</p>
+    </div>
+    <div class="filter text-center">
+        <div><i class="fa-solid fa-igloo"></i></div>
+        <p>Arctic</p>
+    </div>
+    <div class="filter text-center">
+        <div><i class="fa-solid fa-mountain"></i></div>
+        <p>Mountains</p>
+    </div>
+    <div class="filter text-center">
+        <div><i class="fa-brands fa-fort-awesome"></i></div>
+        <p>Castles</p>
+    </div>
+    <div class="filter text-center">
+        <div><i class="fa-solid fa-tent"></i></div>
+        <p>Camping</p>
+    </div>
+    <div class="filter text-center">
+        <div><i class="fa-brands fa-fort-awesome"></i></div>
+        <p>Castles</p>
+    </div>
+    <div class="tax-toggle">
+        <div class="form-check-reverse form-switch">
+            <input 
+                class="form-check-input" 
+                type="checkbox" 
+                role="switch" 
+                id="switchCheckDefault"
+            >
+            <label class="form-check-label" for="switchCheckDefault">Display total after taxes</label>
+        </div>
+    </div>
+ </div>
+
+<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
     <% for(let listing of allListings) { %>
-        <a href="/listings/<%= listing._id %>" class="listing-link">
-            <div class="card col listing-card" >
-                <img src="<%= listing.image.url %>" class="card-img-top" style="height: 20rem;" alt="Listings">
-                <div class="card-img-overlay"></div>
-                <div class="card-body">
-                    <p class="card-text">
-                        <b><%= listing.title %></b> <br>
-                        &#8377; <%= listing.price.toLocaleString("en-IN")%> /night
-                    </p>
+        <div class="col">
+            <a href="/listings/<%= listing._id %>" class="listing-link">
+                <div class="card listing-card h-100 border-0">
+                    <img src="<%= listing.image.url %>" class="card-img-top rounded-4" style="height: 20rem;" alt="Listings">
+                    <div class="card-body px-0 pt-2">
+                        <p class="card-text">
+                            <b><%= listing.title %></b> <br>
+                            <span class="text-secondary">₹ <%= listing.price.toLocaleString("en-IN")%> /night</span>
+                            <i class="tax-info"> &nbsp; &nbsp;+18% GST</i>
+                        </p>
+                    </div>
                 </div>
-            </div>
-        </a>
+            </a>
+        </div>
     <% } %>
 </div>
-    
-   
 
+<script>
+    let taxSwitch = document.getElementById("switchCheckDefault");
+    if (taxSwitch) {
+        taxSwitch.addEventListener("click", () =>{
+            let taxInfo = document.getElementsByClassName('tax-info');
+            for(info of taxInfo){
+                if(info.style.display != "inline") {
+                    info.style.display = "inline";
+                } else{
+                    info.style.display = "none";
+                }
+            }
+        });
+    } else{
+        console.error("The tax switch element with ID 'switchCheckDefault' was not found on this view.");
+    }
+</script>
