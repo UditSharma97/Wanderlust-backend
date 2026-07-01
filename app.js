@@ -32,8 +32,14 @@ main()
    });
 
 
+const Listing = require("./models/listing");
+
 async function main() {
     await mongoose.connect(dbUrl);
+    console.log("Connected to:", mongoose.connection.name);
+
+    const count = await Listing.countDocuments();
+    console.log("Total Listings:", count);
 }
 
 app.set("view engine", "ejs");
@@ -53,7 +59,7 @@ app.use(express.static(path.join(__dirname, "/public")));
 const store = MongoStore.create({
     mongoUrl: dbUrl,
     crypto: {
-        secret: "mysecretcode",
+        secret: process.env.SECRET,
     },
     touchAfter: 24 * 3600, //for Lazy Update
 
@@ -61,7 +67,7 @@ const store = MongoStore.create({
 
 const sessionOptions = {
     store,
-    secret: "mysupersecretcode",
+    secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
     cookie:{
